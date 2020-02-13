@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import 'about_wdiget.dart';
+import 'feed_widget.dart';
+
 class CardPaginationScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => CardPaginationScreenState();
@@ -23,6 +26,8 @@ class CardPaginationScreenState extends State<CardPaginationScreen> {
   var _topHeaderExpandedHeight = 500.0;
   var _bottomWidgetInitialHeightWhenToolbarExpanded = 0.0;
   var _secondWidgetTopMargin = 0.0;
+  var _marginBetweenAboutAndFeed = 150.0;
+  var _gapForFeedPageAndToolbar = 80;
 
   Widget secondChild, firstChild;
 
@@ -182,28 +187,28 @@ class CardPaginationScreenState extends State<CardPaginationScreen> {
       //when toolbar not collapsed and scroll going up
       if (!isGoingDown &&
           _secondWidgetTopMargin <= _secondChildLastGlobalBottomPosition &&
-          _secondWidgetTopMargin >= 150) {
-        if (_secondWidgetTopMargin < _topHeaderExpandedHeight + 80) {
+          _secondWidgetTopMargin >= _marginBetweenAboutAndFeed) {
+        if (_secondWidgetTopMargin < _topHeaderExpandedHeight + _gapForFeedPageAndToolbar) {
           _firstWidgetScrollController.jumpTo(
               _firstWidgetScrollController.position.pixels - details.delta.dy);
         }
         _secondWidgetTopMargin += details.delta.dy;
-        if (_secondWidgetTopMargin < 150) {
-          _secondWidgetTopMargin = 150;
+        if (_secondWidgetTopMargin < _marginBetweenAboutAndFeed) {
+          _secondWidgetTopMargin = _marginBetweenAboutAndFeed;
         } else if (_secondWidgetTopMargin >
             _secondChildLastGlobalBottomPosition) {
           _secondWidgetTopMargin = _secondChildLastGlobalBottomPosition;
         }
       }
       //when toolbar already been collapsed
-      if (_secondWidgetTopMargin <= 150 &&
+      if (_secondWidgetTopMargin <= _marginBetweenAboutAndFeed &&
           scrollingPhysics is NeverScrollableScrollPhysics &&
           !isGoingDown) {
         isSecondChildExpandedAllTheWay = true;
         scrollingPhysics = AlwaysScrollableScrollPhysics();
       }
       //when going down
-      else if (_secondWidgetTopMargin >= 150 &&
+      else if (_secondWidgetTopMargin >= _marginBetweenAboutAndFeed &&
           isGoingDown &&
           _secondWidgetTopMargin <= _secondChildLastGlobalBottomPosition) {
         _secondWidgetTopMargin += details.delta.dy;
@@ -211,8 +216,8 @@ class CardPaginationScreenState extends State<CardPaginationScreen> {
             _topHeaderExpandedHeight)
           _firstWidgetScrollController.jumpTo(
               _firstWidgetScrollController.position.pixels - details.delta.dy);
-        if (_secondWidgetTopMargin < 150) {
-          _secondWidgetTopMargin = 150;
+        if (_secondWidgetTopMargin < _marginBetweenAboutAndFeed) {
+          _secondWidgetTopMargin = _marginBetweenAboutAndFeed;
         } else if (_secondWidgetTopMargin >
             _secondChildLastGlobalBottomPosition) {
           _secondWidgetTopMargin = _secondChildLastGlobalBottomPosition;
@@ -226,7 +231,7 @@ class CardPaginationScreenState extends State<CardPaginationScreen> {
   onFeedWidgetPanEnd(DragEndDetails details) {
     pointDownY = 0;
     //if toolbar not collapsed then expand again
-    if (_secondWidgetTopMargin > 150) {
+    if (_secondWidgetTopMargin > _marginBetweenAboutAndFeed) {
       _secondWidgetTopMargin = _secondChildLastGlobalBottomPosition;
       _firstWidgetScrollController.jumpTo(0);
       setState(() {});
